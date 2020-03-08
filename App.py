@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-class Record(db.Model):
+class records(db.Model):
 	id = db.Column(db.Integer, primary_key = True)
 	year = db.Column(db.String(100))
 	quarter = db.Column(db.String(100))
@@ -35,20 +35,9 @@ class Record(db.Model):
 		self.product_3_items = product_3_items
 		self.product_3_amount = product_3_amount
 
-
-class yearwise_record(db.Model):
-	id = db.Column(db.Integer, primary_key = True)
-	year = db.Column(db.Integer)
-	total_amount = db.Column(db.Float)
-
-	def __init__(self, year, total_amount):
-		self.year = year
-		self.total_amount = total_amount
-
-
 @app.route('/')
 def Index():
-	all_data = Record.query.all()
+	all_data = records.query.all()
 	quarters = ['Q1', 'Q2','Q3', 'Q4']
 	years = ['2000', '2001', '2002']
 	return render_template('index.html', records = all_data, quarters = quarters, years = years)
@@ -66,7 +55,7 @@ def add():
 		product_3_items = request.form['product_3_items']
 		product_3_amount = request.form['product_3_amount']
 
-		product_data = Record(year, quarter, product_1_items, product_1_amount, product_2_items, product_2_amount, product_3_items, product_3_amount)
+		product_data = records(year, quarter, product_1_items, product_1_amount, product_2_items, product_2_amount, product_3_items, product_3_amount)
 		db.session.add(product_data)
 		db.session.commit()
 
@@ -77,7 +66,7 @@ def add():
 @app.route('/update', methods = ['GET', 'POST'])
 def update():
 	if request.method == 'POST':
-		record_data = Record.query.get(request.form.get('id'))
+		record_data = records.query.get(request.form.get('id'))
 		record_data.year = request.form['year']
 		record_data.quarter = request.form['quarter']
 		record_data.product_1_items = request.form['product_1_items']
@@ -94,7 +83,7 @@ def update():
 
 @app.route('/delete/<id>/', methods = ['GET', 'POST'])
 def delete(id):
-	record_data = Record.query.get(id)
+	record_data = records.query.get(id)
 	db.session.delete(record_data)
 	db.session.commit()
 	flash("Record Deleted Successfully!")
@@ -105,12 +94,12 @@ def delete(id):
 
 @app.route('/visualization')
 def visualization():
-	all_data = Record.query.all()
-	categories, series_data = graph_data(all_data)
+	all_data = records.query.all()
+	categories, series_data = graph_data()
 	return render_template('visualization.html', categories=categories, series_data=series_data)
 
 
-def graph_data(all_data):
+def graph_data():
 	connection = pymysql.connect(host='localhost',
                          user='root',
                          password='root',
@@ -118,7 +107,7 @@ def graph_data(all_data):
 
 	cursor=connection.cursor()
 
-	df = pd.read_sql('SELECT * FROM record', con=connection)
+	df = pd.read_sql('SELECT * FROM records', con=connection)
 	categories = list(sorted(set(df['year'])))
 
 	

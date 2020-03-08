@@ -76,9 +76,10 @@
                         <form action="{{url_for('update')}}" method="POST">
                            <div class="form-group">
                               <label>Year:</label>
+                              <input type="hidden" name="id" value="{{row.id}}">
                               <select name= "year" class="form-control">
                                   {% for year in years %}
-                                  <option value= "{{year}}" SELECTED>{{year}}</option>"
+                                  <option value= "{{year}}" {% if year == row.year %} SELECTED {% endif %}>{{year}}</option>
                                   {% endfor %}
                               </select>
                            </div>
@@ -87,7 +88,7 @@
                               <label>Quarter:</label>
                               <select name= "quarter" class="form-control">
                                   {% for quarter in quarters %}
-                                  <option value= "{{quarter}}" SELECTED>{{quarter}}</option>"
+                                  <option value= "{{quarter}}" {% if quarter == row.quarter %} SELECTED {% endif %}>{{quarter}}</option>"
                                   {% endfor %}
                               </select>
                            </div>
