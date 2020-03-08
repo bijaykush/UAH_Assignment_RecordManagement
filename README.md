@@ -15,3 +15,6 @@ This project was developed in a couple of days for a test assignment and needs m
 ![Alt text](https://github.com/bijaykush/UAH_Assignment_RecordManagement/blob/master/Data%20Visualization%20Page.JPG?raw=true "Data Visualization Page")
 2. Data Visualization Page
 ![Alt text](https://github.com/bijaykush/UAH_Assignment_RecordManagement/blob/master/Home%20Page.JPG?raw=true "Data Visualization Page")
+
+## CRUD Operation
+Create, Update, Get and Delete APIs were implemented to work with the data in the database. Adding OR Updating data may cause discrepancies in some cases since I scurried to finish the job.
