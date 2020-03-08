@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+
+{% block title %} Data Visualization {% endblock %}
+
+
+{% block body %}
+
+<div class="container">
+	<div class="row">
+		<div class="col md-12">
+			<div class="jumbotron p-3">
+				<h2>Data <b>Visualization</b></h2>
+				<meta id="yearwise_record_data" data-name="{{yearwise_record}}" data-other="{{yearwise_record}}" data-categories="{{categories}}" data-series_data="{{series_data}}">
+				<div id="stacked_column_chart"></div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var data = $('#yearwise_record_data').data('name');
+	var categories = $('#yearwise_record_data').data('categories');
+	var series_data = $('#yearwise_record_data').data('series_data');
+
+	Highcharts.chart('stacked_column_chart', {
+
+    chart: {
+        type: 'column'
+    },
+
+    title: {
+        text: 'Total quarter sales (stacked in column), grouped by products'
+    },
+
+    credits: {
+    	text: 'Bijay Kushawaha',
+    	href: 'https://github.com/bijaykush'
+    },
+
+    xAxis: {
+        categories: eval(categories)
+    },
+
+    yAxis: {
+        allowDecimals: false,
+        min: 0,
+        title: {
+            text: 'Sale (Amount)'
+        }
+    },
+
+    tooltip: {
+        formatter: function () {
+        	var stackName = this.series.userOptions.stack;
+             return '<b>Stack name: </b>' + stackName + '<br/><b>' + this.x + '</b><br/>' +
+	         this.series.name + ' amount: ' + this.y + '<br/>' +
+	         'Total amount for '+stackName+' in '+this.x+': '  + this.point.stackTotal;
+        }
+    },
+
+    plotOptions: {
+        column: {
+            stacking: 'normal'
+        }
+    },
+    series: eval(series_data)
+});
+</script>
+
+{% endblock %}

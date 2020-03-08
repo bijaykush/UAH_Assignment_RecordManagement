@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+
+
+{% block title %} Home {% endblock %}
+
+
+{% block body %}
+
+<div class="container">
+	<div class="row">
+		<div class="col md-12">
+			<div class="jumbotron p-3">
+				<h2>Manage <b>Products</b> <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#add_modal">Add New Record</button>
+               <a type="button" href="{{url_for('visualization')}}" class="btn btn-primary" role="button">
+                  Data Visualization
+               </a>
+            </h2>
+
+				{% with messages = get_flashed_messages() %}
+
+				{% if messages%}
+				{% for message in messages%}
+				<div class="alert alert-success alert-dismissable" role="alert">
+					<button class="close" type="button" data-dismiss="alert" aria-label="close">
+						<span aria-hidden = "true">X</span>
+					</button>
+					{{message}}
+				</div>
+				{% endfor %}
+				{% endif %}
+
+				{% endwith %}
+
+				<table class="table table-hover table-dark">
+					<tr>
+						<th>ID</th>
+                  <th>Year</th>
+						<th>Quarter</th>
+						<th>Product 1 Items</th>
+						<th>Product 1 Amount</th>
+						<th>Product 2 Items</th>
+						<th>Product 2 Items</th>
+						<th>Product 3 Items</th>
+						<th>Product 3 Items</th>
+					</tr>
+
+					{% for row in records %}
+
+					<tr>
+						<td>{{row.id}}</td>
+                  <td>{{row.year}}</td>
+						<td>{{row.quarter}}</td>
+						<td>{{row.product_1_items}}</td>
+						<td>{{row.product_1_amount}}</td>
+						<td>{{row.product_2_items}}</td>
+						<td>{{row.product_2_amount}}</td>
+						<td>{{row.product_3_items}}</td>
+						<td>{{row.product_3_amount}}</td>
+						<td style="display: flex;">
+							<a href="/update/{{row.id}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#edit_modal{{row.id}}">Edit</a>
+
+							<a href="/delete/{{row.id}}" class="btn btn-danger btn-xs" onclick="return confirm('Are You Sure To Delete ?')">Delete</a>
+
+						</td>
+					</tr>
+
+            <!-- Modal Edit Product-->
+            <div id="edit_modal{{row.id}}" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">Update Record</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{url_for('update')}}" method="POST">
+                           <div class="form-group">
+                              <label>Year:</label>
+                              <select name= "year" class="form-control">
+                                  {% for year in years %}
+                                  <option value= "{{year}}" SELECTED>{{year}}</option>"
+                                  {% endfor %}
+                              </select>
+                           </div>
+                           
+                           <div class="form-group" class="form-control">
+                              <label>Quarter:</label>
+                              <select name= "quarter" class="form-control">
+                                  {% for quarter in quarters %}
+                                  <option value= "{{quarter}}" SELECTED>{{quarter}}</option>"
+                                  {% endfor %}
+                              </select>
+                           </div>
+                            <div class="form-group">
+                              <label>Product 1 Items:</label>
+                              <input type="number" class="form-control" name="product_1_items" value="{{row.product_1_items}}" required="1">
+                           </div>
+                            <div class="form-group">
+                              <label>Product 1 Amount:</label>
+                              <input type="number" class="form-control" name="product_1_amount" value="{{row.product_1_amount}}" step="any" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Product 2 Items:</label>
+                              <input type="number" class="form-control" name="product_2_items" value="{{row.product_2_items}}" required="1">
+                           </div>
+                            <div class="form-group">
+                              <label>Product 2 Amount:</label>
+                              <input type="number" class="form-control" name="product_2_amount" step="any" value="{{row.product_2_amount}}" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Product 3 Items:</label>
+                              <input type="number" class="form-control" name="product_3_items" value="{{row.product_3_items}}" required="1">
+                           </div>
+                            <div class="form-group">
+                              <label>Product 3 Amount:</label>
+                              <input type="number" class="form-control" name="product_3_amount" step="any"
+                              value="{{row.product_3_amount}}" required="1">
+                           </div>
+
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Update</button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                     </div>
+                  </div>
+               </div>
+            </div>  
+
+{% endfor %}
+
+				</table>
+			</div>
+
+            <!-- Modal Add New Product-->
+            <div id="add_modal" class="modal fade" role="dialog">
+               <div class="modal-dialog">
+                  <div class="modal-content">
+                     <div class="modal-header">
+                        <h4 class="modal-title">Add New Record</h4>
+                     </div>
+                     <div class="modal-body">
+                        <form action="{{url_for('add')}}" method="POST">
+                           <div class="form-group">
+                              <label>Year:</label>
+                              <select name= "year" class="form-control">
+                                  {% for year in years %}
+                                  <option value= "{{year}}" {% if each == "2000" %} SELECTED {% endif %}>{{year}}</option>"
+                                  {% endfor %}
+                              </select>
+                           </div>
+
+                           <div class="form-group">
+                              <label>Quarter:</label>
+                              <select name= "quarter" class="form-control">
+                                  {% for quarter in quarters %}
+                                  <option value= "{{quarter}}" {% if each == "Q1" %} SELECTED {% endif %}>{{quarter}}</option>"
+                                  {% endfor %}
+                              </select>
+                           </div>
+
+                            <div class="form-group">
+                              <label>Product 1 Items:</label>
+                              <input type="number" class="form-control" name="product_1_items" required="1">
+                           </div>
+                            <div class="form-group">
+                              <label>Product 1 Amount:</label>
+                              <input type="number" class="form-control" name="product_1_amount" step="any" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Product 2 Items:</label>
+                              <input type="number" class="form-control" name="product_2_items" required="1">
+                           </div>
+                            <div class="form-group">
+                              <label>Product 2 Amount:</label>
+                              <input type="number" class="form-control" name="product_2_amount" step="any" required="1">
+                           </div>
+                           <div class="form-group">
+                              <label>Product 3 Items:</label>
+                              <input type="number" class="form-control" name="product_3_items" required="1">
+                           </div>
+                            <div class="form-group">
+                              <label>Product 3 Amount:</label>
+                              <input type="number" class="form-control" name="product_3_amount" step="any" required="1">
+                           </div>
+
+                           <div class="form-group">
+                              <button class="btn btn-primary" type="submit">Add Record</button>
+                           </div>
+                        </form>
+                     </div>
+                     <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}
